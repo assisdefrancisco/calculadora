@@ -34,7 +34,6 @@ export default class Calculator extends Component {
         } else {
             const equals = operation === '='; 
             const currentOperation = this.state.operation;
-
             const values = [...this.state.values]
             
             try {
@@ -49,7 +48,7 @@ export default class Calculator extends Component {
                 displayValue: values[0], 
                 operation: equals ? null : operation, 
                 current: equals ? 0 : 1,
-                clearDisplay: equals,
+                clearDisplay: !equals,
                 values 
             });
         }
