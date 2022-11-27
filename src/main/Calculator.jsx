@@ -6,9 +6,9 @@ import Display from "./components/Display";
 
 const initialState = {
     displayValue: '0', // valor que está será exibido no display da calculadora
-    clearDisplay: false, // limpar o display quando necessário
-    operation: null, // armazena a operação
-    values: [0, 0], // valores para o calculo
+    clearDisplay: false, //se precisa limpar o display
+    operation: null, // armazena a operação +, -, *, / 
+    values: [0, 0], // armazena os alores para o calculo
     current: 0, // indice atual do array que está manipulado.
 }
 
@@ -29,7 +29,31 @@ export default class Calculator extends Component {
     }
 
     setOperation(operation) {
-        console.log(operation)
+        if (this.state.current === 0) {
+            this.setState({ operation, current: 1, clearDisplay: true });            
+        } else {
+            const equals = operation === '='; 
+            const currentOperation = this.state.operation;
+
+            const values = [...this.state.values]
+            
+            try {
+                values[0] = eval(`${values[0]} ${currentOperation} ${values[1]}`)
+            } catch(e) {
+                values[0] = this.state.values[0]
+            }
+
+            values[1] = 0;
+
+            this.setState({ 
+                displayValue: values[0], 
+                operation: equals ? null : operation, 
+                current: equals ? 0 : 1,
+                clearDisplay: equals,
+                values 
+            });
+        }
+
     }
 
     addDigit(n) {
@@ -51,9 +75,7 @@ export default class Calculator extends Component {
             const values = [...this.state.values];
             values[i] = newValue;
 
-            this.setState({ values })
-            console.log(values);
-
+            this.setState({ values });
         }
 
     }
@@ -79,7 +101,6 @@ export default class Calculator extends Component {
                 <Button label="0" click={this.addDigit} double />
                 <Button label="." click={this.addDigit} />
                 <Button label="=" click={this.setOperation} operation />
-
             </div>
         )
     }
